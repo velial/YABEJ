@@ -1,11 +1,4 @@
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.text.ParseException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,12 +8,19 @@ import java.text.ParseException;
  * To change this template use File | Settings | File Templates.
  */
 public class YEBEJ_cli {
+    String siteName;
+
     static void cli_printHeader()
     {
         System.out.println("====================================");
         System.out.println("Yet Another Blog Engine J");
         System.out.println("Command Line Interface");
         System.out.println("Type \"yebej_cli --help\" for more help...");
+    }
+
+    static void cli_printHelp()
+    {
+        System.out.println("\t\t[--config:<path to config.json>]");
     }
 
     static void findAllFilesInDirectory(String path)
@@ -32,36 +32,34 @@ public class YEBEJ_cli {
         }
     }
 
-    static void readConfig()
-    {
-        JSONParser parser = new JSONParser();
-        try
-        {
-            Object object = parser.parse(new FileReader("config" + System.getProperty("file.separator") + "config.json"));
-            JSONObject jsonObject = (JSONObject) object;
-            String siteName = (String) jsonObject.get("siteName");
-            System.out.println("Site name: " + siteName);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (org.json.simple.parser.ParseException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void main(String[] argv)
     {
+        String pathToConfig = null;
+
         cli_printHeader();
-        readConfig();
         for (String arg : argv)
         {
             if ("--help".equals(arg))
             {
-                System.out.println("More help ......");
+                cli_printHelp();
+                return;
+            }
+            if (arg.indexOf("--config",0)>=0)
+            {
+                String[] spl = arg.split(":");
+                pathToConfig = spl[1];
             }
         }
 
+        Config config;
+        if (pathToConfig != null)
+        {
+            config = new Config(pathToConfig);
+        } else
+        {
+            config = new Config();
+        }
+        System.out.println(config.toString());
         findAllFilesInDirectory("posts");
     }
 }

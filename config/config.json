@@ -1,3 +1,5 @@
 {
-    "siteName": "Yet Another Blog Engine J"
+    "siteName": "Yet Another Blog Engine J",
+    "dir_posts" : "posts",
+    "dir_template" : "template"
 }
