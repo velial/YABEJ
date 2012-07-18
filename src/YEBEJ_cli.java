@@ -1,4 +1,11 @@
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.ParseException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,10 +32,28 @@ public class YEBEJ_cli {
         }
     }
 
+    static void readConfig()
+    {
+        JSONParser parser = new JSONParser();
+        try
+        {
+            Object object = parser.parse(new FileReader("config" + System.getProperty("file.separator") + "config.json"));
+            JSONObject jsonObject = (JSONObject) object;
+            String siteName = (String) jsonObject.get("siteName");
+            System.out.println("Site name: " + siteName);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (org.json.simple.parser.ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] argv)
     {
         cli_printHeader();
-
+        readConfig();
         for (String arg : argv)
         {
             if ("--help".equals(arg))
